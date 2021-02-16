@@ -23,19 +23,20 @@ public class PacManModel {
 	private Canvas canvas;
 	
 	public PacManModel() {
-		location = new Point2D(15, 24);
+		location = new Point2D(12, 23);
 		direction = Direction.NONE;
 		currentImage = pacStill;
 		canvas = Pacman.canvas;
-		//System.out.print(currentImage.impl_getUrl());
 	}
 	
 	public void move(Direction dir) {
-		location.add(changeVelocity(dir));
+		//System.out.print(direction + " (" + location.getX() + ", " + location.getY() +")");
+		location = location.add(changeLocation(dir));
+
 	}
 	
-	public Point2D changeVelocity(Direction direction){
-		System.out.print(direction);
+	public Point2D changeLocation(Direction direction){
+		System.out.print(direction + " (" + location.getX() + ", " + location.getY() +")");
         if(direction == Direction.LEFT){
             return new Point2D(-1,0);
         }
@@ -65,7 +66,6 @@ public class PacManModel {
 	public void setCurrentImage(Image img) {
 		this.currentImage = img;
 		GraphicsContext gc = canvas.getGraphicsContext2D();
-		gc.drawImage(currentImage, 15 * PIXELS, 24 * PIXELS);	
-		
+		gc.drawImage(currentImage, this.location.getX() * PIXELS, this.location.getY() * PIXELS);	
 	}
 }
