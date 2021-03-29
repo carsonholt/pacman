@@ -1,5 +1,7 @@
 package pacman;
 
+import java.awt.Graphics;
+
 import javax.swing.*;
 
 import javafx.application.Application;
@@ -20,9 +22,8 @@ public class Pacman extends Application {
 		canvas = new Canvas(600,720);
 		primaryStage.setScene(scene);
 		primaryStage.show();
-		Board b = new Board(level);
+		//Board b = new Board(level);
 		Controller ctrl = new Controller();
-		
 		/*JFrame f = new JFrame();
 		f.setSize(600, 720);
 		f.setTitle("Pacman");
@@ -31,6 +32,7 @@ public class Pacman extends Application {
 		root.getChildren().add(canvas);
 		root.requestFocus();
 		root.setOnKeyPressed(ctrl);
+		//b.gameLoop();
 	}
 	
 	public static void main(String[] args) {

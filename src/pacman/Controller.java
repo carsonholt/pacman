@@ -6,10 +6,12 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 public class Controller implements EventHandler<KeyEvent> {
-	private PacManModel pacmanModel;
+	public PacManModel pacmanModel;
+	public Board board;
 	
 	public Controller() {
 		this.pacmanModel = new PacManModel();
+		this.board = new Board(Pacman.level);
 	}
 	
 	@Override
@@ -17,7 +19,7 @@ public class Controller implements EventHandler<KeyEvent> {
 		boolean keyRecognized = true;
 		KeyCode code = keyEvent.getCode();
 		PacManModel.Direction direction = PacManModel.Direction.NONE;
-		Image img = PacManModel.currentImage;
+		Image img = pacmanModel.currentImage;
 		if (code == KeyCode.LEFT) {
 			//System.out.print("Left");
 			direction = PacManModel.Direction.LEFT;
@@ -36,9 +38,10 @@ public class Controller implements EventHandler<KeyEvent> {
 		
 		if (keyRecognized) {
             keyEvent.consume();
-            pacmanModel.setCurrentDirection(direction);
+            pacmanModel.setDirection(direction);
             pacmanModel.move(direction);
             pacmanModel.setCurrentImage(img);
+            board.draw(pacmanModel);
         }
 		
 	}

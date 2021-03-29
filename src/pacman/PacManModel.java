@@ -15,28 +15,39 @@ public class PacManModel {
 	private Image pacUp;
 	private Image pacDown;
 	private Image pacStill = new Image(getClass().getResource("/pac_still.png").toString());
-	private Point2D location;
+	private Point2D currentLocation;
+	private Point2D oldLocation;
 	private Direction direction;
 	private Point2D velocity;
 	private static final int PIXELS = 24;
-	public static Image currentImage;
+	public Image currentImage;
 	private Canvas canvas;
+	public int lives;
+	public int score;
 	
 	public PacManModel() {
-		location = new Point2D(12, 23);
+		currentLocation = (new Point2D(12, 23));
+		oldLocation = null;
 		direction = Direction.NONE;
 		currentImage = pacStill;
 		canvas = Pacman.canvas;
+		lives = 3;
+		score = 0;
 	}
 	
 	public void move(Direction dir) {
-		//System.out.print(direction + " (" + location.getX() + ", " + location.getY() +")");
-		location = location.add(changeLocation(dir));
+		// move pacman in the appropriate direction
+		setOldLocation(currentLocation);
+		currentLocation = getCurrentLocation().add(changeLocation(dir));
+		setCurrentLocation(currentLocation);
+		
+		System.out.print(direction + " (" + currentLocation.getX() + ", " + currentLocation.getY() +")");
 
 	}
 	
 	public Point2D changeLocation(Direction direction){
-		System.out.print(direction + " (" + location.getX() + ", " + location.getY() +")");
+		//System.out.print(direction + " (" + getLocation().getX() + ", " + getLocation().getY() +")");
+		
         if(direction == Direction.LEFT){
             return new Point2D(-1,0);
         }
@@ -54,18 +65,37 @@ public class PacManModel {
         }
     }
 
-	public void setCurrentDirection(Direction dir) {
+	public Direction getDirection() {
+		return direction;
+	}
+	
+	public void setDirection(Direction dir) {
 		// TODO Auto-generated method stub
 		this.direction = dir;
 	}
 	
-	public void setCurrentLocation(Point2D loc) {
-		this.location = loc;
+	public Image getCurrentImage() {
+		return currentImage;
 	}
 	
 	public void setCurrentImage(Image img) {
 		this.currentImage = img;
-		GraphicsContext gc = canvas.getGraphicsContext2D();
-		gc.drawImage(currentImage, this.location.getX() * PIXELS, this.location.getY() * PIXELS);	
+		//GraphicsContext gc = canvas.getGraphicsContext2D();
+		//gc.drawImage(currentImage, this.location.getX() * PIXELS, this.location.getY() * PIXELS);	
+	}
+
+	public Point2D getCurrentLocation() {
+		return currentLocation;
+	}
+
+	public void setCurrentLocation(Point2D location) {
+		this.currentLocation = location;
+	}
+	
+	public Point2D getOldLocation() {
+		return oldLocation;
+	}
+	public void setOldLocation(Point2D loc) {
+		this.oldLocation = loc;
 	}
 }

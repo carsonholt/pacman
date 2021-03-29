@@ -10,6 +10,9 @@ import java.io.IOException;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import pacman.PacManModel.Direction;
 
 public class Board {
 	private static final int width = 600;
@@ -19,16 +22,22 @@ public class Board {
 	private Image dot = new Image(getClass().getResource("/dot.png").toString());
 	private Image pellet = new Image(getClass().getResource("/pellet.png").toString());
 	private Image wall = new Image(getClass().getResource("/wall.png").toString());
+	//private Image pacStill = new Image(getClass().getResource("/pac_still.png").toString());
+	//private PacManModel pacmanModel = new PacManModel();
+	//private Image pacmanImage = pacmanModel.currentImage;
 	private Canvas canvas;
+	private GraphicsContext gc;
 	private int[][] map;
 	
 	public Board(int level) {
 		map = new int[25][30];
 		canvas = Pacman.canvas;
+		gc = canvas.getGraphicsContext2D();
 		readFile(level);
+		//gc.drawImage(pacmanModel.getCurrentImage(), pacmanModel.getLocation().getX() * PIXELS, pacmanModel.getLocation().getY() * PIXELS);
 	}
 	
-	public void drawBoard(Graphics g) {
+	public void clearBoard(Graphics g) {
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, width, height);
 		g.setColor(Color.BLACK);
@@ -47,10 +56,12 @@ public class Board {
 					col = 0;
 					row++;
 				} else {
-					draw(ch, col, row);
+					//map[col][row] = ch;
+					drawSprite((char) ch, col, row);
 					col++;
 				}
 			}
+			r.close();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -60,29 +71,52 @@ public class Board {
 		}
 	}
 	
-	private void draw(int ch, int col, int row) {
-		GraphicsContext gc = canvas.getGraphicsContext2D();
+	public void draw(PacManModel pacmanModel) {
 		//map[col][row] = ch;
 		
-		if (ch == 'W') {
-			gc.drawImage(wall, col*PIXELS, row*PIXELS);
-		} 
-		if (ch == '.') {
-			gc.drawImage(dot, col*PIXELS, row*PIXELS);
-		}
+		//char ch = 0;
 		
-		/*
-		switch (ch) {
-		case 'W':
-			gc.drawImage(wall, col*PIXELS, row*PIXELS);
-		case '.':
-			gc.drawImage(dot, col*PIXELS, row*PIXELS);
-		case 'P':
-			//gc.drawImage(pellet, col*PIXELS, row*PIXELS);
+		// read in file
+		/*for (int x = 0; x < width/PIXELS; x++) {
+			for (int y = 0; y < height/PIXELS; y++) {
+				if (ch == 'W') {
+					gc.drawImage(wall, x*PIXELS, y*PIXELS);
+				} 
+				if (ch == '.') {
+					gc.drawImage(dot, x*PIXELS, y*PIXELS);
+				}
+			}
 		}*/
+		//repaint();
+		gc.clearRect(pacmanModel.getOldLocation().getX() * PIXELS, pacmanModel.getOldLocation().getY() * PIXELS, PIXELS, PIXELS);
+		//System.out.println("Pacman location: (" + pacmanModel.getLocation().getX() + ", " + pacmanModel.getLocation().getY());
+		gc.drawImage(pacmanModel.currentImage, pacmanModel.getCurrentLocation().getX() * PIXELS, pacmanModel.getCurrentLocation().getY() * PIXELS);
+	}
+
+	private void repaint() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void paint(Graphics g) {
+		//super.paint(g);
+		clearBoard(g);
+		//draw(g);
 	}
 	
-	public void paint(Graphics g) {
-		drawBoard(g);
+	private void drawSprite(char ch, int x, int y) {
+		if (ch == 'W') {
+			gc.drawImage(wall, x*PIXELS, y*PIXELS);
+		} 
+		if (ch == '.') {
+			gc.drawImage(dot, x*PIXELS, y*PIXELS);
+		}
+		
+	}
+	
+	public void gameLoop() {
+		//while (true) {
+		//}
+		
 	}
 }
