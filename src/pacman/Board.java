@@ -6,12 +6,11 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Timer;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import pacman.PacManModel.Direction;
 
 public class Board {
@@ -19,22 +18,25 @@ public class Board {
 	private static final int height = 720;
 	private static final int PIXELS = 24;
 	
-	private Image dot = new Image(getClass().getResource("/dot.png").toString());
-	private Image pellet = new Image(getClass().getResource("/pellet.png").toString());
-	private Image wall = new Image(getClass().getResource("/wall.png").toString());
-	//private Image pacStill = new Image(getClass().getResource("/pac_still.png").toString());
+	private Image imgDot = new Image(getClass().getResource("/dot.png").toString());
+	private Image imgPellet = new Image(getClass().getResource("/pellet.png").toString());
+	private Image imgWall = new Image(getClass().getResource("/wall.png").toString());
+	private Image imgRedGhost = new Image(getClass().getResource("/ghost_red.png").toString());
+	private Image pacStill = new Image(getClass().getResource("/pac_still.png").toString());
 	//private PacManModel pacmanModel = new PacManModel();
 	//private Image pacmanImage = pacmanModel.currentImage;
 	private Canvas canvas;
 	private GraphicsContext gc;
-	private int[][] map;
+	public int[][] map;
+	private Timer timer;
+	private Ghost redGhost;
 	
 	public Board(int level) {
 		map = new int[25][30];
 		canvas = Pacman.canvas;
 		gc = canvas.getGraphicsContext2D();
 		readFile(level);
-		//gc.drawImage(pacmanModel.getCurrentImage(), pacmanModel.getLocation().getX() * PIXELS, pacmanModel.getLocation().getY() * PIXELS);
+		//timer.scheduleAtFixedRate(() -> drawGhost(redGhost) , 40, 40);
 	}
 	
 	public void clearBoard(Graphics g) {
@@ -56,8 +58,10 @@ public class Board {
 					col = 0;
 					row++;
 				} else {
-					//map[col][row] = ch;
-					drawSprite((char) ch, col, row);
+					if (col < 25 && row < 30) {
+						map[col][row] = ch;
+						drawSprite((char) ch, col, row);
+					}					
 					col++;
 				}
 			}
@@ -71,7 +75,7 @@ public class Board {
 		}
 	}
 	
-	public void draw(PacManModel pacmanModel) {
+	public void drawPacman(PacManModel pacmanModel) {
 		//map[col][row] = ch;
 		
 		//char ch = 0;
@@ -93,6 +97,12 @@ public class Board {
 		gc.drawImage(pacmanModel.currentImage, pacmanModel.getCurrentLocation().getX() * PIXELS, pacmanModel.getCurrentLocation().getY() * PIXELS);
 	}
 
+	public void drawGhost(Ghost redGhost) {
+		
+		gc.clearRect(redGhost.getOldLocation().getX() * PIXELS, redGhost.getOldLocation().getY() * PIXELS, PIXELS, PIXELS);
+		gc.drawImage(redGhost.currentImage, redGhost.getCurrentLocation().getX() * PIXELS, redGhost.getCurrentLocation().getY() * PIXELS);
+	}
+	
 	private void repaint() {
 		// TODO Auto-generated method stub
 		
@@ -104,19 +114,29 @@ public class Board {
 		//draw(g);
 	}
 	
+	/**
+	 * Draw the sprite corresponding to a character in a text file
+	 * @param ch - the character in the text file
+	 * @param x - the x-coordinate of ch in the text file
+	 * @param y - the y-coordinate of ch in the text file
+	 */
 	private void drawSprite(char ch, int x, int y) {
 		if (ch == 'W') {
-			gc.drawImage(wall, x*PIXELS, y*PIXELS);
+			gc.drawImage(imgWall, x*PIXELS, y*PIXELS);
 		} 
 		if (ch == '.') {
-			gc.drawImage(dot, x*PIXELS, y*PIXELS);
+			gc.drawImage(imgDot, x*PIXELS, y*PIXELS);
 		}
-		
+		if (ch == 'P') {
+			gc.drawImage(imgPellet, x*PIXELS, y*PIXELS);
+		}
+		if (ch == 'G') {
+			gc.drawImage(imgRedGhost, x*PIXELS, y*PIXELS);
+		}
+		if (ch == 'S') {
+			gc.drawImage(pacStill, x*PIXELS, y*PIXELS);
+		}
 	}
 	
-	public void gameLoop() {
-		//while (true) {
-		//}
-		
-	}
+	
 }

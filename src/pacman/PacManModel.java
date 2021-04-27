@@ -1,5 +1,7 @@
 package pacman;
 
+import java.util.Timer;
+
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -18,7 +20,7 @@ public class PacManModel {
 	private Point2D currentLocation;
 	private Point2D oldLocation;
 	private Direction direction;
-	private Point2D velocity;
+	private float speed;
 	private static final int PIXELS = 24;
 	public Image currentImage;
 	private Canvas canvas;
@@ -26,39 +28,47 @@ public class PacManModel {
 	public int score;
 	
 	public PacManModel() {
-		currentLocation = (new Point2D(12, 23));
+		currentLocation = (new Point2D(12, 24));
 		oldLocation = null;
 		direction = Direction.NONE;
+		speed = 2.0f;
 		currentImage = pacStill;
 		canvas = Pacman.canvas;
 		lives = 3;
 		score = 0;
 	}
 	
-	public void move(Direction dir) {
+	public void move(double elapsedSeconds) {
+		// Set up timer
+		//Timer timer = new Timer();
+		//long startTime = System.currentTimeMillis();
+		//System.out.println("Start time: " + startTime);
+		//long elapsedTime = 0L;
 		// move pacman in the appropriate direction
 		setOldLocation(currentLocation);
-		currentLocation = getCurrentLocation().add(changeLocation(dir));
+		currentLocation = getCurrentLocation().add(changeLocation(elapsedSeconds));
 		setCurrentLocation(currentLocation);
 		
-		System.out.print(direction + " (" + currentLocation.getX() + ", " + currentLocation.getY() +")");
+		//System.out.print(direction + " (" + currentLocation.getX() + ", " + currentLocation.getY() +")");
 
 	}
 	
-	public Point2D changeLocation(Direction direction){
+	public Point2D changeLocation(double elapsedSeconds){
 		//System.out.print(direction + " (" + getLocation().getX() + ", " + getLocation().getY() +")");
-		
+		//long elapsedTime = System.currentTimeMillis() - startTime;
+		//System.out.println("Elapsed time: " + elapsedTime);
+		//long endTime = System.currentTimeMillis();
         if(direction == Direction.LEFT){
-            return new Point2D(-1,0);
+            return new Point2D(-speed * elapsedSeconds,0);
         }
         else if(direction == Direction.RIGHT){
-            return new Point2D(1,0);
+            return new Point2D(speed * elapsedSeconds,0);
         }
         else if(direction == Direction.UP){
-            return new Point2D(0,-1);
+            return new Point2D(0, -speed * elapsedSeconds);
         }
         else if(direction == Direction.DOWN){
-            return new Point2D(0,1);
+            return new Point2D(0, speed * elapsedSeconds);
         }
         else{
             return new Point2D(0,0);
@@ -95,7 +105,16 @@ public class PacManModel {
 	public Point2D getOldLocation() {
 		return oldLocation;
 	}
+	
 	public void setOldLocation(Point2D loc) {
 		this.oldLocation = loc;
+	}
+
+	public float getSpeed() {
+		return speed;
+	}
+
+	public void setSpeed(float speed) {
+		this.speed = speed;
 	}
 }
